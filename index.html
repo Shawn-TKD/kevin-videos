@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KEVIN · 动作素材库 / Motion Clip Library</title>
+<meta name="description" content="KEVIN 数字人动作素材库 — 18 段竖屏视频，含对话、舞蹈、互动与系统状态。">
+<style>
+  :root{
+    --bg:#fafaf8;
+    --surface:#ffffff;
+    --ink:#14110f;
+    --ink-2:#5b5651;
+    --ink-3:#8d8781;
+    --line:#e7e3dd;
+    --accent:#ff4d2e;
+    --accent-soft:#fff1ed;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+
+  /* ---------- header ---------- */
+  header{padding:72px 0 40px;border-bottom:1px solid var(--line)}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin-bottom:20px;
+  }
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--accent)}
+  h1{
+    font-size:clamp(34px,5.4vw,60px);
+    line-height:1.06;letter-spacing:-.02em;font-weight:800;
+  }
+  h1 span{color:var(--ink-3);font-weight:300}
+  .sub{
+    margin-top:18px;max-width:62ch;color:var(--ink-2);
+    font-size:16px;
+  }
+  .stats{display:flex;flex-wrap:wrap;gap:38px;margin-top:36px}
+  .stat b{display:block;font-size:26px;font-weight:700;letter-spacing:-.01em}
+  .stat i{font-style:normal;font-size:12px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase}
+
+  /* ---------- filters ---------- */
+  .toolbar{
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    padding:28px 0 26px;
+    position:sticky;top:0;background:rgba(250,250,248,.9);
+    backdrop-filter:blur(14px);z-index:20;border-bottom:1px solid transparent;
+  }
+  .chip{
+    border:1px solid var(--line);background:var(--surface);color:var(--ink-2);
+    padding:8px 16px;border-radius:999px;font-size:13.5px;font-weight:500;
+    cursor:pointer;transition:.18s;font-family:inherit;
+  }
+  .chip:hover{border-color:#c9c3bb;color:var(--ink)}
+  .chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+  /* ---------- grid ---------- */
+  .grid{
+    display:grid;gap:22px;
+    grid-template-columns:repeat(auto-fill,minmax(212px,1fr));
+    padding-bottom:72px;
+  }
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;cursor:pointer;transition:transform .22s ease,box-shadow .22s ease,border-color .22s;
+  }
+  .card:hover{transform:translateY(-3px);box-shadow:0 14px 34px -14px rgba(20,17,15,.26);border-color:#d5cec5}
+  .thumb{
+    position:relative;aspect-ratio:9/16;background:#f1eeea;overflow:hidden;
+  }
+  .thumb video{width:100%;height:100%;object-fit:cover;display:block}
+  .idx{
+    position:absolute;top:10px;left:10px;z-index:2;
+    background:rgba(20,17,15,.72);color:#fff;font-size:11px;font-weight:600;
+    padding:3px 8px;border-radius:6px;letter-spacing:.06em;
+    backdrop-filter:blur(4px);
+  }
+  .dur{
+    position:absolute;bottom:10px;right:10px;z-index:2;
+    background:rgba(20,17,15,.72);color:#fff;font-size:11px;font-weight:600;
+    padding:3px 7px;border-radius:6px;font-variant-numeric:tabular-nums;
+    backdrop-filter:blur(4px);
+  }
+  .play{
+    position:absolute;inset:0;z-index:1;display:grid;place-items:center;
+    background:linear-gradient(to top,rgba(20,17,15,.28),transparent 45%);
+    opacity:0;transition:opacity .2s;
+  }
+  .card:hover .play{opacity:1}
+  .play svg{width:44px;height:44px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.35))}
+  .meta{padding:13px 14px 15px}
+  .meta h3{font-size:14.5px;font-weight:600;letter-spacing:-.005em}
+  .meta p{
+    font-size:11.5px;color:var(--ink-3);margin-top:3px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+
+  /* ---------- lightbox ---------- */
+  .lb{
+    position:fixed;inset:0;z-index:100;display:none;
+    background:rgba(18,15,13,.93);backdrop-filter:blur(8px);
+    padding:26px;
+  }
+  .lb.on{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+  .lb video{
+    max-height:78vh;max-width:min(94vw,470px);width:auto;border-radius:16px;
+    background:#000;box-shadow:0 30px 80px -20px rgba(0,0,0,.8);
+  }
+  .lb-bar{display:flex;align-items:center;gap:18px;color:#fff;flex-wrap:wrap;justify-content:center}
+  .lb-bar strong{font-size:15px;font-weight:600}
+  .lb-bar span{color:rgba(255,255,255,.5);font-size:12px;font-family:ui-monospace,monospace}
+  .lb-bar a{
+    color:#fff;text-decoration:none;font-size:12.5px;border:1px solid rgba(255,255,255,.28);
+    padding:6px 14px;border-radius:999px;transition:.18s;
+  }
+  .lb-bar a:hover{background:#fff;color:#14110f;border-color:#fff}
+  .lb-close{
+    position:absolute;top:20px;right:24px;width:38px;height:38px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;
+    font-size:20px;cursor:pointer;line-height:1;
+  }
+  .lb-close:hover{background:rgba(255,255,255,.12)}
+
+  footer{border-top:1px solid var(--line);padding:30px 0 56px;color:var(--ink-3);font-size:12.5px}
+  footer a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--line)}
+  footer a:hover{color:var(--accent);border-color:var(--accent)}
+  @media (max-width:600px){
+    header{padding:48px 0 30px}
+    .stats{gap:26px}
+    .grid{grid-template-columns:repeat(2,1fr);gap:14px}
+    .meta{padding:11px 11px 13px}
+    .meta h3{font-size:13px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Motion Clip Library</div>
+    <h1>KEVIN <span>/ 动作素材库</span></h1>
+    <p class="sub">数字人 KEVIN 的 18 段竖屏动作短片，覆盖对话应答、镜头签名、Hip-hop 舞蹈与系统待机状态。全部素材为 1440 × 2560 原生分辨率，可直接用于数字人交互排练、剪辑拼装或产品演示。</p>
+    <div class="stats">
+      <div class="stat"><b>18</b><i>Clips</i></div>
+      <div class="stat"><b>1440 × 2560</b><i>Resolution</i></div>
+      <div class="stat"><b>4.5 – 10.1s</b><i>Duration</i></div>
+      <div class="stat"><b>60 MB</b><i>Total size</i></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="toolbar" id="filters">
+    <button class="chip on" data-f="all">全部 <span id="c-all"></span></button>
+    <button class="chip" data-f="talk">对话与互动</button>
+    <button class="chip" data-f="camera">镜头与签名</button>
+    <button class="chip" data-f="dance">舞蹈表演</button>
+    <button class="chip" data-f="system">系统状态</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="lb" id="lb">
+  <button class="lb-close" id="lbClose" aria-label="关闭">✕</button>
+  <video id="lbVideo" controls playsinline></video>
+  <div class="lb-bar">
+    <strong id="lbTitle"></strong>
+    <span id="lbFile"></span>
+    <a id="lbDl" download>下载原片 ↓</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    KEVIN Motion Clip Library · 素材以 <a href="https://github.com/Shawn-TKD/kevin-videos">GitHub 公开仓库</a> 形式发布，可自由下载、分发与二次剪辑。
+  </div>
+</footer>
+
+<script>
+const CLIPS = [
+  {f:"01-proactive-question.mp4",        cn:"主动提问",            en:"Proactive Question",        cat:"talk",   d:"4.5s"},
+  {f:"02-hiphop-dance.mp4",              cn:"Hip-hop 舞蹈",        en:"Hip-hop Dance",             cat:"dance",  d:"10.1s"},
+  {f:"03-kabedon-interaction.mp4",       cn:"壁咚互动",            en:"Kabedon Interaction",       cat:"talk",   d:"8.0s"},
+  {f:"04-idle-interaction.mp4",          cn:"待机互动",            en:"Idle Interaction",          cat:"talk",   d:"4.5s"},
+  {f:"05-idle-dance.mp4",                cn:"待机舞蹈",            en:"Idle Dance",                cat:"dance",  d:"6.6s"},
+  {f:"06-fallback.mp4",                  cn:"兜底",                en:"Fallback State",            cat:"system", d:"6.6s"},
+  {f:"07-black-vest-hiphop-dance.mp4",   cn:"黑背心 Hip-hop 舞蹈",  en:"Black Vest Hip-hop Dance",  cat:"dance",  d:"10.0s"},
+  {f:"08-black-vest-camera-signature.mp4",cn:"黑背心镜头签名",      en:"Black Vest Signature",      cat:"camera", d:"8.0s"},
+  {f:"09-camera-signature.mp4",          cn:"镜头签名",            en:"Camera Signature",          cat:"camera", d:"8.0s"},
+  {f:"10-opening.mp4",                   cn:"开场",                en:"Opening",                   cat:"system", d:"4.5s"},
+  {f:"11-listening.mp4",                 cn:"倾听",                en:"Listening",                 cat:"talk",   d:"4.5s"},
+  {f:"12-closing.mp4",                   cn:"收场",                en:"Closing",                   cat:"system", d:"4.5s"},
+  {f:"13-speaking.mp4",                  cn:"说话",                en:"Speaking",                  cat:"talk",   d:"6.6s"},
+  {f:"14-thinking.mp4",                  cn:"思考",                en:"Thinking",                  cat:"talk",   d:"4.5s"},
+  {f:"15-shirt-lift-interaction.mp4",    cn:"掀衣互动",            en:"Shirt-lift Interaction",    cat:"talk",   d:"8.0s"},
+  {f:"16-suspended-mic-rap.mp4",         cn:"悬吊麦克风说唱",      en:"Suspended Mic Rap",         cat:"dance",  d:"10.1s"},
+  {f:"17-beckoning.mp4",                 cn:"招揽",                en:"Beckoning",                 cat:"talk",   d:"6.6s"},
+  {f:"18-asking-writing-permission.mp4", cn:"征求写作许可",        en:"Asking Writing Permission", cat:"talk",   d:"6.6s"}
+];
+const SRC = "videos/";
+const grid = document.getElementById('grid');
+document.getElementById('c-all').textContent = '(' + CLIPS.length + ')';
+
+const playIcon = '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="rgba(255,255,255,.92)"/><path d="M10 8.2v7.6l6-3.8-6-3.8z" fill="#14110f"/></svg>';
+
+CLIPS.forEach(function(c, i){
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.dataset.cat = c.cat;
+  card.innerHTML =
+    '<div class="thumb">' +
+      '<span class="idx">' + String(i+1).padStart(2,'0') + '</span>' +
+      '<video src="' + SRC + c.f + '" preload="metadata" muted loop playsinline disablepictureinpicture></video>' +
+      '<div class="play">' + playIcon + '</div>' +
+      '<span class="dur">' + c.d + '</span>' +
+    '</div>' +
+    '<div class="meta"><h3>' + c.cn + '</h3><p>' + c.en + '</p></div>';
+
+  const vid = card.querySelector('video');
+  card.addEventListener('mouseenter', function(){ vid.play().catch(function(){}); });
+  card.addEventListener('mouseleave', function(){ vid.pause(); vid.currentTime = 0; });
+  card.addEventListener('click', function(){ open(c); });
+  grid.appendChild(card);
+});
+
+// filters
+document.getElementById('filters').addEventListener('click', function(e){
+  const b = e.target.closest('.chip');
+  if(!b) return;
+  document.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('on'); });
+  b.classList.add('on');
+  const f = b.dataset.f;
+  document.querySelectorAll('.card').forEach(function(card){
+    card.style.display = (f === 'all' || card.dataset.cat === f) ? '' : 'none';
+  });
+});
+
+// lightbox
+const lb = document.getElementById('lb');
+const lbVideo = document.getElementById('lbVideo');
+function open(c){
+  lbVideo.src = SRC + c.f;
+  document.getElementById('lbTitle').textContent = c.cn + ' · ' + c.en;
+  document.getElementById('lbFile').textContent = c.f;
+  const dl = document.getElementById('lbDl');
+  dl.href = SRC + c.f; dl.setAttribute('download', c.f);
+  lb.classList.add('on');
+  lbVideo.play().catch(function(){});
+}
+function close(){
+  lb.classList.remove('on');
+  lbVideo.pause(); lbVideo.removeAttribute('src'); lbVideo.load();
+}
+document.getElementById('lbClose').addEventListener('click', close);
+lb.addEventListener('click', function(e){ if(e.target === lb) close(); });
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+</script>
+</body>
+</html>
